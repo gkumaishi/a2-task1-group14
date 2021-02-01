@@ -3,28 +3,43 @@ title: "Assignment 2 Task 1"
 author: "Grace Kumaishi"
 date: "1/31/2021"
 output: html_document
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(shiny)
 ```
 
-## R Markdown
+Your group's .Rmd must be customized as follows:
+- With a non-default theme (for example using bootstrap themes, with a custom theme, or with a theme from another package)
+- With a separate tab for each of the three sections below the Overview (see this section on tabs in RMarkdown: The Definitive Guide by Yihui Xie, J. J. Allaire, and Garrett Grolemund)
+- With code folding applied. All code used to wrangle the data and prepare your graphs & tables should be available for us to see if we click on the code buttons (but hide any warnings & messages)
+- The document should be cohesive in presentation and communication (e.g. all graphs should use the same theming, consistent color schemes, etc.)
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+## Overview {.tabset}
+- An engaging image (with caption, including photo credit) that is relevant to the dataset
+- A brief summary (3 - 4 sentences) of the dataset, and what is included in this “report”
+- A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
+- A professionally formatted data citation
+- Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### Tab 1 (QS)
 
-```{r cars}
-summary(cars)
+```{r}
+
 ```
 
-## Including Plots
+### Tab 2 (GK)
 
-You can also embed plots, for example:
+```{r}
 
-```{r pressure, echo=FALSE}
-plot(pressure)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+### Tab 3 (KD)
+
+```{r}
+
+```
+
