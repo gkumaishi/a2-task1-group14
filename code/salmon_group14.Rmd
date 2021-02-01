@@ -7,9 +7,15 @@ runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 library(shiny)
+library(here)
+library(janitor)
+
+# read in data
+willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
+  clean_names()
 ```
 
 Your group's .Rmd must be customized as follows:
