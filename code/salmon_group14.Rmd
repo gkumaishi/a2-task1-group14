@@ -1,10 +1,10 @@
 ---
 title: "Assignment 2 Task 1"
-author: "Grace Kumaishi"
+author: "Grace Kumaishi, Kaley Dodson, Quin Smith"
 date: "1/31/2021"
 output: 
   html_document:
-    theme: darkly
+    theme: cerulean
     code_folding: hide
 runtime: shiny
 ---
@@ -19,6 +19,7 @@ library(lubridate)
 library(tsibble)
 library(feasts)
 library(slider)
+library(patchwork)
 
 # read in data
 willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
@@ -32,6 +33,9 @@ Your group's .Rmd must be customized as follows:
 - The document should be cohesive in presentation and communication (e.g. all graphs should use the same theming, consistent color schemes, etc.)
 
 ## Overview {.tabset}
+
+![Salmon, Image Source: Portland General Electric](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
+
 - An engaging image (with caption, including photo credit) that is relevant to the dataset
 - A brief summary (3 - 4 sentences) of the dataset, and what is included in this “report”
 - A map of the fish ladder location (you can make this in R on your own, or include an existing map appropriately licensed, with attribution)
@@ -39,7 +43,7 @@ Your group's .Rmd must be customized as follows:
 - Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
 ```{r}
-#data wrangling
+#data wrangling, turn dataset into a tsibble
 
 fish_ts <- willamette_fish %>% 
   mutate(date = mdy(date)) %>% 
@@ -50,7 +54,32 @@ fish_ts <- willamette_fish %>%
 
 ### Tab 1 (QS)
 
-```{r}
+```{r, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 8}
+#time series plot of adult passage for coho, jack coho, and steelhead
+
+fish_tsplot <- fish_ts %>%
+  replace_na(list(coho = 0, steelhead = 0, jack_coho = 0))
+  
+coho_plot <- fish_tsplot %>% 
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = coho), color = "#317eb1") +
+  labs(y = "Coho", x = "") +
+  theme_bw()
+
+jc_plot <- fish_tsplot %>% 
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = jack_coho), color = "#317eb1") +
+  labs(y = "Jack coho", x = "") +
+  theme_bw()
+
+sh_plot <- fish_tsplot %>% 
+  ggplot(aes(x = date)) +
+  geom_line(aes(y = steelhead), color = "#317eb1") +
+  labs(y = "Steelhead", x = "Year") +
+  theme_bw()
+
+comp_graph <- coho_plot / jc_plot / sh_plot
+comp_graph
 
 ```
 
