@@ -35,14 +35,9 @@ willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
   clean_names()
 ```
 
-Your group's .Rmd must be customized as follows:
-- With a non-default theme (for example using bootstrap themes, with a custom theme, or with a theme from another package)
-- With a separate tab for each of the three sections below the Overview (see this section on tabs in RMarkdown: The Definitive Guide by Yihui Xie, J. J. Allaire, and Garrett Grolemund)
-- With code folding applied. All code used to wrangle the data and prepare your graphs & tables should be available for us to see if we click on the code buttons (but hide any warnings & messages)
-- The document should be cohesive in presentation and communication (e.g. all graphs should use the same theming, consistent color schemes, etc.)
-
 ## Overview {.tabset}
 
+#### Fish ladder location:
 ![Salmon, Image Source: Portland General Electric](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
 
 - An engaging image (with caption, including photo credit) that is relevant to the dataset
@@ -51,12 +46,24 @@ Your group's .Rmd must be customized as follows:
 - A professionally formatted data citation
 - Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
+#### Summary:
+
+#### Citation: 
+Data shared by and accessed from [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text). Data Courtesy of [U.S. Army Corps of Engineers, NWD](https://www.nwd.usace.army.mil/) and [Chelan](https://www.chelanpud.org/), [Douglas](https://douglaspud.org/), and [Grant](https://www.grantpud.org/) County PUDs, [Yakima Klickitat Fisheries Project](http://www.ykfp.org/), [Colville Tribes Fish & Wildlife (OBMEP)](http://nrd.colvilletribes.com/obmep/), [Oregon Department of Fish & Wildlife](https://www.dfw.state.or.us/), [Washington Department of Fish & Wildlife](https://wdfw.wa.gov/).
+
 ```{r}
 #data wrangling, turn dataset into a tsibble (new way with pivot_longer())
 
 fish_ts <- willamette_fish %>% 
   mutate(date = mdy(date)) %>% 
-  as_tsibble(key = species, index = date)
+  as_tsibble(key = species, index = date) %>% 
+  select(date, species, fish_count) %>% 
+  mutate(species_name = case_when(
+    species == "coho" ~ "Coho",
+    species == "jack_coho" ~ "Jack Coho",
+    species == "steelhead" ~ "Steelhead"
+  )) 
+  
 
 #old way
 fish_ts2 <- willamette_fish2 %>% 
@@ -108,30 +115,45 @@ comp_graph
 ### Tab 2 (GK)
 
 ```{r}
-coho_season <- fish_ts2 %>% 
-  gg_season(y = coho) +
-  labs(y = "Coho",
-       x = "") +
-  theme_bw() +
-  theme(legend.position = "none") 
+# Using pivot_longer() tidy dataset
+fish_seasons <- fish_ts %>% 
+  gg_season(y = fish_count) +
+  facet_wrap(~species_name, ncol = 1, scales = "free") +
+  labs(x = "Month", y = "Counts") +
+  theme_bw()
 
-jc_season <- fish_ts2 %>% 
-  gg_season(y = jack_coho) +
-  labs(y = "Jack coho",
-       x = "") +
-  theme_bw() +
-  theme(legend.position = "none")
+fish_seasons
 
-sh_season <- fish_ts2 %>% 
-  gg_season(y = steelhead) +
-  labs(y = "Steelhead",
-       x = "Month") +
-  theme_bw() +
-  theme(legend.position = "none")
+# Old way (delete?)
+#coho_season <- fish_ts2 %>% 
+  #gg_season(y = coho) +
+  #labs(y = "Coho count",
+       #x = "") +
+  #theme_bw() +
+  #theme(legend.position = "none") 
 
-combined <- coho_season / jc_season / sh_season
-combined
+#jc_season <- fish_ts2 %>% 
+  #gg_season(y = jack_coho) +
+  #labs(y = "Jack Coho count",
+       #x = "") +
+  #theme_bw() 
+
+#sh_season <- fish_ts2 %>% 
+  #gg_season(y = steelhead) +
+  #labs(y = "Steelhead count",
+       #x = "Month") +
+  #theme_bw() +
+  #theme(legend.position = "none")
+
+#combined <- coho_season / jc_season / sh_season
+#combined
 ```
+
+**Figure 1:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
+
+#### Notable trends:
+- Coho and jack coho peak in October, and are virtually absent between December - August. 
+- Steelhead show a wider variety in months present, peaking between May - July for most years. 
 
 ### Tab 3 (KD)
 
