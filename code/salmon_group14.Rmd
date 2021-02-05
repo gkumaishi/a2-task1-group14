@@ -21,8 +21,17 @@ library(feasts)
 library(slider)
 library(patchwork)
 
-# read in data
+# read in data (new way with pivot_longer())
 willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
+  clean_names() %>% 
+  pivot_longer(
+    cols = c(steelhead, coho, jack_coho),
+    names_to = "species",
+    values_to = "fish_count"
+  )
+
+#old way
+willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
   clean_names()
 ```
 
@@ -43,9 +52,14 @@ Your group's .Rmd must be customized as follows:
 - Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
 ```{r}
-#data wrangling, turn dataset into a tsibble
+#data wrangling, turn dataset into a tsibble (new way with pivot_longer())
 
 fish_ts <- willamette_fish %>% 
+  mutate(date = mdy(date)) %>% 
+  as_tsibble(key = species, index = date)
+
+#old way
+fish_ts2 <- willamette_fish2 %>% 
   mutate(date = mdy(date)) %>% 
   as_tsibble(key = NULL, index = date)
 
@@ -55,24 +69,32 @@ fish_ts <- willamette_fish %>%
 ### Tab 1 (QS)
 
 ```{r, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 8}
-#time series plot of adult passage for coho, jack coho, and steelhead
+#time series plot of adult passage for coho, jack coho, and steelhead (new way with pivot_longer())
 
 fish_tsplot <- fish_ts %>%
-  replace_na(list(coho = 0, steelhead = 0, jack_coho = 0))
-  
-coho_plot <- fish_tsplot %>% 
+  replace_na(list(fish_count = 0))
+
+ggplot(data = fish_tsplot, aes(x = date, y = fish_count, color = species)) +
+  geom_line() +
+  theme_bw()
+
+#old way
+fish_tsplot2 <- fish_ts2 %>%
+  replace_na(list(coho = 0, jack_coho = 0, steelhead = 0))
+
+coho_plot <- fish_tsplot2 %>% 
   ggplot(aes(x = date)) +
   geom_line(aes(y = coho), color = "#317eb1") +
   labs(y = "Coho", x = "") +
   theme_bw()
 
-jc_plot <- fish_tsplot %>% 
+jc_plot <- fish_tsplot2 %>% 
   ggplot(aes(x = date)) +
   geom_line(aes(y = jack_coho), color = "#317eb1") +
   labs(y = "Jack coho", x = "") +
   theme_bw()
 
-sh_plot <- fish_tsplot %>% 
+sh_plot <- fish_tsplot2 %>% 
   ggplot(aes(x = date)) +
   geom_line(aes(y = steelhead), color = "#317eb1") +
   labs(y = "Steelhead", x = "Year") +
@@ -81,7 +103,7 @@ sh_plot <- fish_tsplot %>%
 comp_graph <- coho_plot / jc_plot / sh_plot
 comp_graph
 
-```
+```  
 
 ### Tab 2 (GK)
 
