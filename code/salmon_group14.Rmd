@@ -108,21 +108,21 @@ comp_graph
 ### Tab 2 (GK)
 
 ```{r}
-coho_season <- fish_ts %>% 
+coho_season <- fish_ts2 %>% 
   gg_season(y = coho) +
   labs(y = "Coho",
        x = "") +
   theme_bw() +
   theme(legend.position = "none") 
 
-jc_season <- fish_ts %>% 
+jc_season <- fish_ts2 %>% 
   gg_season(y = jack_coho) +
   labs(y = "Jack coho",
        x = "") +
   theme_bw() +
   theme(legend.position = "none")
 
-sh_season <- fish_ts %>% 
+sh_season <- fish_ts2 %>% 
   gg_season(y = steelhead) +
   labs(y = "Steelhead",
        x = "Month") +
