@@ -157,7 +157,7 @@ fish_seasons
 
 ### Summary statistics and analysis
 
-```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder, vizualized by species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)"}
+```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder, vizualized by species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
 # wrangling to aggregate fish counts by year
 fish_annual <- fish_ts %>% 
   index_by(year = ~year(.)) %>% # groups observations by year
@@ -165,7 +165,7 @@ fish_annual <- fish_ts %>%
   summarize(total_count = sum(fish_count, na.rm = TRUE)) # counts observations per year by species
 
 #vizualization of annual counts
-ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name, color = "black")) +
+ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name, color = "#317eb1")) +
   geom_col(show.legend = FALSE) +
   facet_wrap(~species_name, scales = "free") +
   theme_bw() +
@@ -173,7 +173,7 @@ ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name, c
   scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010)) +
   theme(axis.text.x = element_text(angle = 30)) +
   scale_y_continuous(labels = scales::comma) +
-  scale_fill_manual(values = rev(brewer.pal(3,"Oranges")))
+  scale_fill_brewer(palette = "Blues") 
 ```
 #### Notable trends:
 - Steelhead and are the most numerous species.
