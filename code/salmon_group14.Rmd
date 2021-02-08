@@ -53,7 +53,7 @@ willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 Data shared by and accessed from [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text). Data Courtesy of [U.S. Army Corps of Engineers, NWD](https://www.nwd.usace.army.mil/) and [Chelan](https://www.chelanpud.org/), [Douglas](https://douglaspud.org/), and [Grant](https://www.grantpud.org/) County PUDs, [Yakima Klickitat Fisheries Project](http://www.ykfp.org/), [Colville Tribes Fish & Wildlife (OBMEP)](http://nrd.colvilletribes.com/obmep/), [Oregon Department of Fish & Wildlife](https://www.dfw.state.or.us/), [Washington Department of Fish & Wildlife](https://wdfw.wa.gov/).
 
 ```{r}
-#data wrangling, turn dataset into a tsibble (new way with pivot_longer())
+#data wrangling, turn dataset into a tsibble
 
 fish_ts <- willamette_fish %>% 
   mutate(date = mdy(date)) %>% # converts date to y-m-d format
