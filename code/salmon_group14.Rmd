@@ -81,8 +81,9 @@ fish_ts2 <- willamette_fish2 %>%
 fish_tsplot <- fish_ts %>%
   replace_na(list(fish_count = 0))
 
-ggplot(data = fish_tsplot, aes(x = date, y = fish_count, color = species)) +
-  geom_line() +
+ggplot(data = fish_tsplot, aes(x = date, y = fish_count)) +
+  geom_line(color = "#317eb1") +
+  facet_wrap(~species, dir = "v") +
   theme_bw()
 
 #old way
@@ -123,37 +124,13 @@ fish_seasons <- fish_ts %>%
   theme_bw()
 
 fish_seasons
-
-# Old way (delete?)
-#coho_season <- fish_ts2 %>% 
-  #gg_season(y = coho) +
-  #labs(y = "Coho count",
-       #x = "") +
-  #theme_bw() +
-  #theme(legend.position = "none") 
-
-#jc_season <- fish_ts2 %>% 
-  #gg_season(y = jack_coho) +
-  #labs(y = "Jack Coho count",
-       #x = "") +
-  #theme_bw() 
-
-#sh_season <- fish_ts2 %>% 
-  #gg_season(y = steelhead) +
-  #labs(y = "Steelhead count",
-       #x = "Month") +
-  #theme_bw() +
-  #theme(legend.position = "none")
-
-#combined <- coho_season / jc_season / sh_season
-#combined
 ```
 
-**Figure 1:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
+**Figure 2:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
 
 #### Notable trends:
-- Coho and jack coho peak in October, and are virtually absent between December - August. 
-- Steelhead show a wider variety in months present, peaking between May - July for most years. 
+- Coho and Jack Coho peak in October, and are virtually absent between December - August. 
+- Steelhead show a wider variety in months present, peaking between May - July for most years, but present throughout all seasons in many years. 
 
 ### Summary statistics and analysis
 
@@ -165,15 +142,15 @@ fish_annual <- fish_ts %>%
   summarize(total_count = sum(fish_count, na.rm = TRUE)) # counts observations per year by species
 
 #vizualization of annual counts
-ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name, color = "#317eb1")) +
-  geom_col(show.legend = FALSE) +
+ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name)) +
+  geom_col(show.legend = FALSE, color = "#317eb1") +
   facet_wrap(~species_name, scales = "free") +
   theme_bw() +
   labs(x = "Year", y = "Individuals Observed") +
   scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010)) +
   theme(axis.text.x = element_text(angle = 30)) +
   scale_y_continuous(labels = scales::comma) +
-  scale_fill_brewer(palette = "Blues") 
+  scale_fill_brewer(palette = "Blues")
 ```
 #### Notable trends:
 - Steelhead and are the most numerous species.
