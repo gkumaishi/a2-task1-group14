@@ -58,6 +58,7 @@ fish_ts <- willamette_fish %>%
     species == "coho" ~ "Coho",
     species == "jack_coho" ~ "Jack Coho",
     species == "steelhead" ~ "Steelhead"
+  ))
 ```
 
 
