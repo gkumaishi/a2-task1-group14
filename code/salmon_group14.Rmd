@@ -124,37 +124,13 @@ fish_seasons <- fish_ts %>%
   theme_bw()
 
 fish_seasons
-
-# Old way (delete?)
-#coho_season <- fish_ts2 %>% 
-  #gg_season(y = coho) +
-  #labs(y = "Coho count",
-       #x = "") +
-  #theme_bw() +
-  #theme(legend.position = "none") 
-
-#jc_season <- fish_ts2 %>% 
-  #gg_season(y = jack_coho) +
-  #labs(y = "Jack Coho count",
-       #x = "") +
-  #theme_bw() 
-
-#sh_season <- fish_ts2 %>% 
-  #gg_season(y = steelhead) +
-  #labs(y = "Steelhead count",
-       #x = "Month") +
-  #theme_bw() +
-  #theme(legend.position = "none")
-
-#combined <- coho_season / jc_season / sh_season
-#combined
 ```
 
-**Figure 1:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
+**Figure 2:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
 
 #### Notable trends:
-- Coho and jack coho peak in October, and are virtually absent between December - August. 
-- Steelhead show a wider variety in months present, peaking between May - July for most years. 
+- Coho and Jack Coho peak in October, and are virtually absent between December - August. 
+- Steelhead show a wider variety in months present, peaking between May - July for most years, but present throughout all seasons in many years. 
 
 ### Summary statistics and analysis
 
