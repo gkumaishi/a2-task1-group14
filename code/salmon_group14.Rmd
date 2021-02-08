@@ -81,8 +81,9 @@ fish_ts2 <- willamette_fish2 %>%
 fish_tsplot <- fish_ts %>%
   replace_na(list(fish_count = 0))
 
-ggplot(data = fish_tsplot, aes(x = date, y = fish_count, color = species)) +
-  geom_line() +
+ggplot(data = fish_tsplot, aes(x = date, y = fish_count)) +
+  geom_line(color = "#317eb1") +
+  facet_wrap(~species, dir = "v") +
   theme_bw()
 
 #old way
