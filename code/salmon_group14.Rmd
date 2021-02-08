@@ -29,11 +29,12 @@ willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 
 ## Overview {.tabset}
 
+![Willamette Falls, Oregon City, Oregon, Image Source: US Army Corps of Engineers](https://www.nwp.usace.army.mil/portals/24/siteimages/locations/_maps/willamette/WFL_vicinity1c.jpg)
+
 #### Fish ladder location:
-![Salmon, Image Source: Portland General Electric](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
+![Sullivan Plant and Willamette Falls, Image Source: Portland General Electric](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
 
 
-![Willamette Falls, Oregon City, Oregon](https://imgur.com/ywQ8AQ4)
 
 #### Summary:
 This report explores and visualizes data for adult fish passage recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River (Oregon). Data was tidied and wrangled for target species and ages (coho, coho jack, and steelhead). Each tab visualizes counts for coho and coho jack as well as steelhead across various time increments. Data were shared by and accessed from Columbia River DART (Data Access in Real Time).
@@ -136,10 +137,10 @@ fish_seasons <- fish_ts %>%
 fish_seasons
 ```
 
-**Figure 2:** Three seasonplots showing trends for three anadromous fish species: coho, jack coho, and steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
+**Figure 2:** Three seasonplots showing trends for three anadromous fish species: Coho, Jack Coho, and Steelhead at the Willamette Falls fish ladder. Counts of individuals over the course of a year are shown, with each color corresponding to a different year of the study. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)).
 
 #### Notable trends:
-- Coho and jack coho peak in October, and are virtually absent between December - August. 
+- Coho and Jack Coho peak in October, and are virtually absent between December - August. 
 - Steelhead show a wider variety in months present, peaking between May - July for most years, but present throughout all seasons in many years. 
 
 ### Summary statistics and analysis
