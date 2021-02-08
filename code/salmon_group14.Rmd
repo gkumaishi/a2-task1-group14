@@ -47,7 +47,7 @@ willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 - A professionally formatted data citation
 - Remember: All code that you used to wrangle the data and prepare the graphs should be available to see if we click on the Code buttons. 
 
-![Willamette Falls, Oregon City, Oregon](https://imgur.com/ywQ8AQ4)
+![Willamette Falls, Oregon City, Oregon](https://i.imgur.com/ywQ8AQ4.png)
 
 #### Summary:
 
