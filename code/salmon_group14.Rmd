@@ -53,12 +53,7 @@ fish_ts <- willamette_fish %>%
     species == "coho" ~ "Coho",
     species == "jack_coho" ~ "Jack Coho",
     species == "steelhead" ~ "Steelhead"
-  )) %>% 
-  pivot_longer( # tidy's data by consolidating steelhead, coho, and jack_coho columns called species into one and their respective observations into a second colunm called fish_count
-    cols = c(steelhead, coho, jack_coho),
-    names_to = "species",
-    values_to = "fish_count"
-  )
+  )) 
 
 ```
 
