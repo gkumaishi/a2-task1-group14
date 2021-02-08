@@ -20,6 +20,7 @@ library(tsibble)
 library(feasts)
 library(slider)
 library(patchwork)
+library(RColorBrewer)
 
 # read in data (new way with pivot_longer())
 willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
@@ -55,16 +56,15 @@ Data shared by and accessed from [Columbia River DART](http://www.cbr.washington
 #data wrangling, turn dataset into a tsibble (new way with pivot_longer())
 
 fish_ts <- willamette_fish %>% 
-  mutate(date = mdy(date)) %>% 
-  as_tsibble(key = species, index = date) %>% 
-  select(date, species, fish_count) %>% 
+  mutate(date = mdy(date)) %>% # converts date to y-m-d format
+  as_tsibble(key = species, index = date) %>% # converts data to tsibble
+  select(date, species, fish_count) %>% # retains only date, species, and fish_count variables
   mutate(species_name = case_when(
     species == "coho" ~ "Coho",
     species == "jack_coho" ~ "Jack Coho",
     species == "steelhead" ~ "Steelhead"
-  )) 
+  )) # creates new column with species' full names
   
-
 #old way
 fish_ts2 <- willamette_fish2 %>% 
   mutate(date = mdy(date)) %>% 
@@ -73,7 +73,7 @@ fish_ts2 <- willamette_fish2 %>%
 ```
 
 
-### Tab 1 (QS)
+### Time series
 
 ```{r, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 8}
 #time series plot of adult passage for coho, jack coho, and steelhead (new way with pivot_longer())
@@ -112,7 +112,7 @@ comp_graph
 
 ```  
 
-### Tab 2 (GK)
+### Seasonplots
 
 ```{r}
 # Using pivot_longer() tidy dataset
@@ -155,9 +155,27 @@ fish_seasons
 - Coho and jack coho peak in October, and are virtually absent between December - August. 
 - Steelhead show a wider variety in months present, peaking between May - July for most years. 
 
-### Tab 3 (KD)
+### Summary statistics and analysis
 
-```{r}
+```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder, vizualized by species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text)"}
+# wrangling to aggregate fish counts by year
+fish_annual <- fish_ts %>% 
+  index_by(year = ~year(.)) %>% # groups observations by year
+  group_by(species_name) %>% # groups observations by species
+  summarize(total_count = sum(fish_count, na.rm = TRUE)) # counts observations per year by species
 
+#vizualization of annual counts
+ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name, color = "black")) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~species_name, scales = "free") +
+  theme_bw() +
+  labs(x = "Year", y = "Individuals Observed") +
+  scale_x_continuous(breaks = c(2002, 2004, 2006, 2008, 2010)) +
+  theme(axis.text.x = element_text(angle = 30)) +
+  scale_y_continuous(labels = scales::comma) +
+  scale_fill_manual(values = rev(brewer.pal(3,"Oranges")))
 ```
+#### Notable trends:
+- Steelhead and are the most numerous species.
+- Coho and Jack Coho numbers increased toward the end of the decade while Steelhead numbers declined somewhat.
 
