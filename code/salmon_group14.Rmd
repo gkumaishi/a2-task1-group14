@@ -24,16 +24,7 @@ library(RColorBrewer)
 
 # read in data (new way with pivot_longer())
 willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
-  clean_names() %>% 
-  pivot_longer(
-    cols = c(steelhead, coho, jack_coho),
-    names_to = "species",
-    values_to = "fish_count"
-  )
-
-#old way
-willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>% 
-  clean_names()
+  clean_names() 
 ```
 
 ## Overview {.tabset}
@@ -49,6 +40,7 @@ willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 
 #### Summary:
 
+
 #### Citation: 
 Data shared by and accessed from [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text). Data Courtesy of [U.S. Army Corps of Engineers, NWD](https://www.nwd.usace.army.mil/) and [Chelan](https://www.chelanpud.org/), [Douglas](https://douglaspud.org/), and [Grant](https://www.grantpud.org/) County PUDs, [Yakima Klickitat Fisheries Project](http://www.ykfp.org/), [Colville Tribes Fish & Wildlife (OBMEP)](http://nrd.colvilletribes.com/obmep/), [Oregon Department of Fish & Wildlife](https://www.dfw.state.or.us/), [Washington Department of Fish & Wildlife](https://wdfw.wa.gov/).
 
@@ -59,16 +51,16 @@ fish_ts <- willamette_fish %>%
   mutate(date = mdy(date)) %>% # converts date to y-m-d format
   as_tsibble(key = species, index = date) %>% # converts data to tsibble
   select(date, species, fish_count) %>% # retains only date, species, and fish_count variables
-  mutate(species_name = case_when(
+  mutate(species_name = case_when( # creates new column with species' full names
     species == "coho" ~ "Coho",
     species == "jack_coho" ~ "Jack Coho",
     species == "steelhead" ~ "Steelhead"
-  )) # creates new column with species' full names
-  
-#old way
-fish_ts2 <- willamette_fish2 %>% 
-  mutate(date = mdy(date)) %>% 
-  as_tsibble(key = NULL, index = date)
+  )) %>% 
+  pivot_longer( # tidy's data by consolidating steelhead, coho, and jack_coho columns called species into one and their respective observations into a second colunm called fish_count
+    cols = c(steelhead, coho, jack_coho),
+    names_to = "species",
+    values_to = "fish_count"
+  )
 
 ```
 
@@ -155,7 +147,7 @@ fish_seasons
 
 ### Summary statistics and analysis
 
-```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder, vizualized by species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
+```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder for steelhead and coho species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
 # wrangling to aggregate fish counts by year
 fish_annual <- fish_ts %>% 
   index_by(year = ~year(.)) %>% # groups observations by year
@@ -174,6 +166,6 @@ ggplot(data = fish_annual, aes(x = year, y = total_count, fill = species_name)) 
   scale_fill_brewer(palette = "Blues")
 ```
 #### Notable trends:
-- Steelhead and are the most numerous species.
-- Coho and Jack Coho numbers increased toward the end of the decade while Steelhead numbers declined somewhat.
+- Steelhead are the most numerous species.
+- Coho and jack coho numbers increased toward the end of the decade while steelhead numbers declined somewhat.
 
