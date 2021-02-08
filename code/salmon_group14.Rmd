@@ -29,12 +29,12 @@ willamette_fish <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 
 ## Overview {.tabset}
 
-![Willamette Falls, Oregon City, Oregon, Image Source: US Army Corps of Engineers](https://www.nwp.usace.army.mil/portals/24/siteimages/locations/_maps/willamette/WFL_vicinity1c.jpg)
 
 #### Fish ladder location:
-![Sullivan Plant and Willamette Falls, Image Source: Portland General Electric](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
 
+![Willamette Falls, Oregon City, Oregon, (Image Source: US Army Corps of Engineers)](https://www.nwp.usace.army.mil/portals/24/siteimages/locations/_maps/willamette/WFL_vicinity1c.jpg)
 
+![Sullivan Plant and Willamette Falls, (Image Source: Portland General Electric)](http://www.cbr.washington.edu/img/hydro/willamette_falls.jpg)
 
 #### Summary:
 This report explores and visualizes data for adult fish passage recorded from 2001-01-01 to 2010-12-31 at the Willamette Falls fish ladder on the Willamette River (Oregon). Data was tidied and wrangled for target species and ages (coho, coho jack, and steelhead). Each tab visualizes counts for coho and coho jack as well as steelhead across various time increments. Data were shared by and accessed from Columbia River DART (Data Access in Real Time).
@@ -46,6 +46,11 @@ Data shared by and accessed from [Columbia River DART](http://www.cbr.washington
 #data wrangling, turn dataset into a tsibble
 
 fish_ts <- willamette_fish %>% 
+   pivot_longer( # tidy's data by consolidating steelhead, coho, and jack_coho columns called species into one and their respective observations into a second colunm called fish_count
+    cols = c(steelhead, coho, jack_coho),
+    names_to = "species",
+    values_to = "fish_count"
+  ) %>% 
   mutate(date = mdy(date)) %>% # converts date to y-m-d format
   as_tsibble(key = species, index = date) %>% # converts data to tsibble
   select(date, species, fish_count) %>% # retains only date, species, and fish_count variables
@@ -53,14 +58,18 @@ fish_ts <- willamette_fish %>%
     species == "coho" ~ "Coho",
     species == "jack_coho" ~ "Jack Coho",
     species == "steelhead" ~ "Steelhead"
+<<<<<<< HEAD
   )) 
 
+=======
+  ))
+>>>>>>> origin
 ```
 
 
 ### Time series
 
-```{r, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 7, fig.cap = "**Figure 1:** a)  Total daily number of adult coho salmon passages observed at Willamette Falls b)  Total daily observed passages of jack coho (coho sized 12-18 cm, usually 2 years of age) returning early to the Willamette River c)  Total number of adult steelhead passages including both wild and hatchery.  Data: "}
+```{r, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 7, fig.cap = "**Figure 1:** a)  Total daily number of adult coho salmon passages observed at Willamette Falls b)  Total daily observed passages of jack coho (coho sized 12-18 cm, usually 2 years of age) returning early to the Willamette River c)  Total number of adult steelhead passages including both wild and hatchery.  (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
 #time series plot of adult passage for coho, jack coho, and steelhead.
 
 fish_tsplot <- fish_ts %>%
@@ -78,19 +87,19 @@ sh_ts <- fish_tsplot %>%
 cohots_plot <- ggplot(data = coho_ts, aes(x = date, y = fish_count)) +
   geom_line(color = "#317eb1") +
   scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
-  labs(y = "Coho", x = "") +
+  labs(y = "Coho count", x = "") +
   theme_bw()
 
 jcts_plot <- ggplot(data = jc_ts, aes(x = date, y = fish_count)) +
   geom_line(color = "#317eb1") +
   scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
-  labs(y = "Jack coho", x = "") +
+  labs(y = "Jack coho count", x = "") +
   theme_bw()
 
 shts_plot <- ggplot(data = sh_ts, aes(x = date, y = fish_count)) +
   geom_line(color = "#317eb1") +
   scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
-  labs(y = "Steelhead", x = "") +
+  labs(y = "Steelhead count", x = "") +
   theme_bw()
 
 comp_graph <- cohots_plot / jcts_plot / shts_plot + plot_annotation(tag_levels = "a", tag_suffix = ")")
@@ -100,28 +109,15 @@ comp_graph
 ```
 
 
-Key Takeaways:
+#### Notable trends:
 
 - Observations of coho and jack coho salmon take place seasonally in fall (~September-October).  The number of observations increased in 2009 and peaked in 2010.
 - Steelhead trout observations vary from year to year.  A common annual trend is an increase from winter to a peak in summer, followed by a decrease into the next winter.
 
 
-
-```{r, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 7, fig.cap = "**Figure 1:** a)  Total number of adult coho salmon observed at Willamette Falls b)  Total daily observed passages of jack coho returning early to the Willamette River c)  Total number of adult steelhead including both wild and hatchery "}
-ggplot(data = fish_tsplot, aes(x = date, y = fish_count)) +
-  geom_line(color = "#317eb1") +
-  facet_wrap(~species_name, 
-             dir = "v",
-             scale = "free") +
-  scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
-  labs(y = "Fish count", x = "") +
-  theme_bw()
-
-```  
-
 ### Seasonplots
 
-```{r}
+```{r, fig.width = 8, fig.height = 7}
 # Using pivot_longer() tidy dataset
 fish_seasons <- fish_ts %>% 
   gg_season(y = fish_count) +
@@ -140,7 +136,7 @@ fish_seasons
 
 ### Summary statistics and analysis
 
-```{r, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder for steelhead and coho species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
+```{r, fig.width = 8, fig.height = 5, fig.cap="**Figure 3:** Annual salmon counts at the Willamette Falls fish ladder for steelhead and coho species. (Data: [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text))"}
 # wrangling to aggregate fish counts by year
 fish_annual <- fish_ts %>% 
   index_by(year = ~year(.)) %>% # groups observations by year
