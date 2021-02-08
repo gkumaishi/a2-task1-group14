@@ -53,7 +53,7 @@ willamette_fish2 <- read.csv(here("data", "willamette_fish_passage.csv")) %>%
 Data shared by and accessed from [Columbia River DART](http://www.cbr.washington.edu/dart/query/adult_graph_text). Data Courtesy of [U.S. Army Corps of Engineers, NWD](https://www.nwd.usace.army.mil/) and [Chelan](https://www.chelanpud.org/), [Douglas](https://douglaspud.org/), and [Grant](https://www.grantpud.org/) County PUDs, [Yakima Klickitat Fisheries Project](http://www.ykfp.org/), [Colville Tribes Fish & Wildlife (OBMEP)](http://nrd.colvilletribes.com/obmep/), [Oregon Department of Fish & Wildlife](https://www.dfw.state.or.us/), [Washington Department of Fish & Wildlife](https://wdfw.wa.gov/).
 
 ```{r}
-#data wrangling, turn dataset into a tsibble (new way with pivot_longer())
+#data wrangling, turn dataset into a tsibble
 
 fish_ts <- willamette_fish %>% 
   mutate(date = mdy(date)) %>% # converts date to y-m-d format
@@ -75,41 +75,62 @@ fish_ts2 <- willamette_fish2 %>%
 
 ### Time series
 
-```{r, warning = FALSE, message = FALSE, fig.width = 10, fig.height = 8}
-#time series plot of adult passage for coho, jack coho, and steelhead (new way with pivot_longer())
+```{r, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 7, fig.cap = "**Figure 1:** a)  Total daily number of adult coho salmon passages observed at Willamette Falls b)  Total daily observed passages of jack coho (coho sized 12-18 cm, usually 2 years of age) returning early to the Willamette River c)  Total number of adult steelhead passages including both wild and hatchery.  Data: "}
+#time series plot of adult passage for coho, jack coho, and steelhead.
 
 fish_tsplot <- fish_ts %>%
   replace_na(list(fish_count = 0))
 
-ggplot(data = fish_tsplot, aes(x = date, y = fish_count)) +
+coho_ts <- fish_tsplot %>% 
+  filter(species == "coho")
+
+jc_ts <- fish_tsplot %>% 
+  filter(species == "jack_coho")
+
+sh_ts <- fish_tsplot %>% 
+  filter(species == "steelhead")
+
+cohots_plot <- ggplot(data = coho_ts, aes(x = date, y = fish_count)) +
   geom_line(color = "#317eb1") +
-  facet_wrap(~species, dir = "v") +
-  theme_bw()
-
-#old way
-fish_tsplot2 <- fish_ts2 %>%
-  replace_na(list(coho = 0, jack_coho = 0, steelhead = 0))
-
-coho_plot <- fish_tsplot2 %>% 
-  ggplot(aes(x = date)) +
-  geom_line(aes(y = coho), color = "#317eb1") +
+  scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
   labs(y = "Coho", x = "") +
   theme_bw()
 
-jc_plot <- fish_tsplot2 %>% 
-  ggplot(aes(x = date)) +
-  geom_line(aes(y = jack_coho), color = "#317eb1") +
+jcts_plot <- ggplot(data = jc_ts, aes(x = date, y = fish_count)) +
+  geom_line(color = "#317eb1") +
+  scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
   labs(y = "Jack coho", x = "") +
   theme_bw()
 
-sh_plot <- fish_tsplot2 %>% 
-  ggplot(aes(x = date)) +
-  geom_line(aes(y = steelhead), color = "#317eb1") +
-  labs(y = "Steelhead", x = "Year") +
+shts_plot <- ggplot(data = sh_ts, aes(x = date, y = fish_count)) +
+  geom_line(color = "#317eb1") +
+  scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
+  labs(y = "Steelhead", x = "") +
   theme_bw()
 
-comp_graph <- coho_plot / jc_plot / sh_plot
+comp_graph <- cohots_plot / jcts_plot / shts_plot + plot_annotation(tag_levels = "a", tag_suffix = ")")
+
 comp_graph
+
+```
+
+
+Key Takeaways:
+
+- Observations of coho and jack coho salmon take place seasonally in fall (~September-October).  The number of observations increased in 2009 and peaked in 2010.
+- Steelhead trout observations vary from year to year.  A common annual trend is an increase from winter to a peak in summer, followed by a decrease into the next winter.
+
+
+
+```{r, warning = FALSE, message = FALSE, fig.width = 8, fig.height = 7, fig.cap = "**Figure 1:** a)  Total number of adult coho salmon observed at Willamette Falls b)  Total daily observed passages of jack coho returning early to the Willamette River c)  Total number of adult steelhead including both wild and hatchery "}
+ggplot(data = fish_tsplot, aes(x = date, y = fish_count)) +
+  geom_line(color = "#317eb1") +
+  facet_wrap(~species_name, 
+             dir = "v",
+             scale = "free") +
+  scale_x_date(breaks = "1 year", date_labels = "%b %Y") +
+  labs(y = "Fish count", x = "") +
+  theme_bw()
 
 ```  
 
